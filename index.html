@@ -42,32 +42,33 @@
           $('.lower').append(arg);
         });
 
-        var getNewTweets = function(){
+        var getNewTweets = function(stream){
 
-          if (streams.home.length>20){
-            displayedTweets = streams.home.slice(-20);
+          if (stream.length>20){
+            displayedTweets = stream.slice(-20);
             oldestTweet = 0;
             $tweethousing.html(' ');
             addOnce(oldTweetButton);
           } else {
-            displayedTweets = streams.home;
+            displayedTweets = stream;
           }
 
           newestTweet = displayedTweets.length-1;
           var index = oldestTweet;
           while(index <= newestTweet){
             var tweet = displayedTweets[index];
-            var $tweet = $('<div class="tweets"></div>');
-            $tweet.html('@' + tweet.user + ': ' + tweet.message + ' <span class="timestamp">' + tweet.created_at + "</span>");
+            var $tweet = $('<div></div>');
+            $tweet.html('<span class="handles">@' + tweet.user + ':</span> <span class="tweets">' + tweet.message + '</span> <span class="timestamps">' + tweet.created_at + "</span>");
             $tweet.prependTo($tweethousing);
             index++;
           }
           oldestTweet = newestTweet+1;
         }
 
-        getNewTweets();
 
-        $('button').on('click', getNewTweets);
+        getNewTweets(streams.home);
+
+        $('button').on('click', function(){getNewTweets(streams.home);});
 
       });
     </script>

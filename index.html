@@ -10,8 +10,8 @@
         background-color: #2A524B 
       }
       .tweets {
-        font: 15px arial,sans-serif;
-        color: rgb(82, 189, 167);
+        font: 20px arial,sans-serif;
+        color: #FFFFFF;
       }
       .upper {
         text-align: center;
@@ -19,8 +19,12 @@
       .lower {
         text-align: center;
       }
-      .timestamp {
-        font: 10px arial,sans-serif;
+      .handles {
+        font: 20px arial,sans-serif;
+        color: rgb(82, 189, 167);
+      }
+      .timestamps {
+        font: 14px arial,sans-serif;
         color: gray;
       }
     </style>
@@ -34,7 +38,7 @@
         var newestTweet;
         var displayedTweets;
         var oldTweetButton = $('<button type="button">Show Older Tweets</button>');
-        var addToLowerOnce = _.once(function(arg){
+        var addOnce = _.once(function(arg){
           $('.lower').append(arg);
         });
 
@@ -44,7 +48,7 @@
             displayedTweets = streams.home.slice(-20);
             oldestTweet = 0;
             $tweethousing.html(' ');
-            addToLowerOnce(oldTweetButton);
+            addOnce(oldTweetButton);
           } else {
             displayedTweets = streams.home;
           }
@@ -68,12 +72,8 @@
       });
     </script>
 
-    <div class="upper">
-    <button type="button">Get New Tweets</button>
-    </div>
-    <div class="tweethousing">
-    </div>
-    <div class="lower">
-    </div>
+    <div class="upper"><button type="button">Get New Tweets</button></div>
+    <div class="tweethousing"></div>
+    <div class="lower"></div>
   </body>
 </html>

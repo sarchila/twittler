@@ -76,9 +76,6 @@
           oldestTweet = newestTweet+1;
 
           $('.handles').on('click', function(){
-            console.log($(this).text().slice(1));
-            console.log(streams.users[$(this).text().slice(1)]);
-            console.log(getNewTweets(streams.users[$(this).text().slice(1)]));
             $('.fullTweetLines').remove();
             oldestTweet = 0;
             displayNewTweets(getNewTweets(streams.users[$(this).text().slice(1)]));

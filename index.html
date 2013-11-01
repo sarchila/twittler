@@ -14,16 +14,34 @@
         font: 20px arial,sans-serif;
         color: #FFFFFF;
       }
+      #logo {
+        font: 200px arial,sans-serif;
+        text-align: center;
+      }
+
+      #logo:hover {
+        color: rgb(37, 224, 186);
+        cursor: pointer;
+      }
+      
       .upper {
         text-align: center;
+        font: 14px arial,sans-serif;
       }
       .lower {
         text-align: center;
+        font: 14px arial,sans-serif;
       }
       .handles {
         font: 20px arial,sans-serif;
         color: rgb(82, 189, 167);
       }
+
+      .handles:hover {
+        color: rgb(37, 224, 186);
+        cursor: pointer;
+      }
+
       .timestamps {
         font: 14px arial,sans-serif;
         color: gray;
@@ -86,21 +104,25 @@
           });
         }
 
-
-        displayNewTweets(getNewTweets(streams.home),$tweethousing);
-
-        $('.getNew').on('click', function(){
+        var getFromAllUsers = function(){
           if (streams.home.length>20){
             $('.fullTweetLines').remove();
           }
           displayNewTweets(getNewTweets(streams.home),$tweethousing);
-        });
+        }
+
+        displayNewTweets(getNewTweets(streams.home),$tweethousing);
+
+        $('.getNew').on('click', getFromAllUsers);
+        $('#logo').on('click', getFromAllUsers);
 
 
       });
     </script>
 
-    <div class="upper"><button type="button" class="getNew">Get New Tweets</button></div>
+    <div class="upper">
+      <span id='logo'>twittler</span> by Santiago Archila<br>
+      <button type="button" class="getNew">Get New Tweets</button></div>
     <div class="tweethousing"></div>
     <div class="lower"></div>
   </body>

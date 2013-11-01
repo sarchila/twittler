@@ -7,6 +7,7 @@
     <script src="underbar.js"></script>
     <style type="text/css">
       body {
+        color: rgb(82, 189, 167);
         background-color: #2A524B 
       }
       .tweets {
@@ -33,47 +34,72 @@
     <script>
       $(document).ready(function(){
         var $tweethousing = $('.tweethousing');
-
         var oldestTweet = 0;
         var newestTweet;
-        var displayedTweets;
-        var oldTweetButton = $('<button type="button">Show Older Tweets</button>');
+        
+        var oldTweetButton = $('<button type="button" class="getOld">Show Older Tweets</button>');
         var addOnce = _.once(function(arg){
           $('.lower').append(arg);
         });
 
+        var createTweetNode = function(tweet){
+          var $tweet = $('<div class="fullTweetLines"></div>');
+          $tweet.html('<span class="handles">@' + tweet.user + '</span>: <span class="tweets">' + tweet.message + '</span> <span class="timestamps">' + tweet.created_at + "</span>");
+          return $tweet;
+        }
+
         var getNewTweets = function(stream){
 
           if (stream.length>20){
-            displayedTweets = stream.slice(-20);
+            var tweetsToDisplay = stream.slice(-20);
             oldestTweet = 0;
-            $tweethousing.html(' ');
             addOnce(oldTweetButton);
+            $('.getOld').on('click', function(){
+              getNewTweets(streams.home);
+            });
           } else {
-            displayedTweets = stream;
+            tweetsToDisplay = stream;
           }
+          return tweetsToDisplay;
+        }
 
-          newestTweet = displayedTweets.length-1;
+        var displayNewTweets = function(tweetsToDisplay){
+
+          newestTweet = tweetsToDisplay.length-1;
           var index = oldestTweet;
           while(index <= newestTweet){
-            var tweet = displayedTweets[index];
-            var $tweet = $('<div></div>');
-            $tweet.html('<span class="handles">@' + tweet.user + ':</span> <span class="tweets">' + tweet.message + '</span> <span class="timestamps">' + tweet.created_at + "</span>");
+            var tweet = tweetsToDisplay[index];
+            var $tweet = createTweetNode(tweet);
             $tweet.prependTo($tweethousing);
             index++;
           }
           oldestTweet = newestTweet+1;
+
+          $('.handles').on('click', function(){
+            console.log($(this).text().slice(1));
+            console.log(streams.users[$(this).text().slice(1)]);
+            console.log(getNewTweets(streams.users[$(this).text().slice(1)]));
+            $('.fullTweetLines').remove();
+            oldestTweet = 0;
+            displayNewTweets(getNewTweets(streams.users[$(this).text().slice(1)]));
+          });
         }
 
 
-        getNewTweets(streams.home);
+        displayNewTweets(getNewTweets(streams.home));
 
-        $('button').on('click', function(){getNewTweets(streams.home);});
+        $('.getNew').on('click', function(){
+          if (streams.home.length>20){
+            $('.fullTweetLines').remove();
+          }
+          displayNewTweets(getNewTweets(streams.home));
+        });
+
 
       });
     </script>
 
-    <div class="upper"><button type="button">Get New Tweets</button></div>
+    <div class="upper"><button type="button" class="getNew">Get New Tweets</button></div>
     <div class="tweethousing"></div>
     <div class="lower"></div>
   </body>

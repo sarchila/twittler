@@ -63,14 +63,14 @@
           return tweetsToDisplay;
         }
 
-        var displayNewTweets = function(tweetsToDisplay){
+        var displayNewTweets = function(tweetsToDisplay, whichDiv){
 
           newestTweet = tweetsToDisplay.length-1;
           var index = oldestTweet;
           while(index <= newestTweet){
             var tweet = tweetsToDisplay[index];
             var $tweet = createTweetNode(tweet);
-            $tweet.prependTo($tweethousing);
+            $tweet.prependTo(whichDiv);
             index++;
           }
           oldestTweet = newestTweet+1;
@@ -78,18 +78,18 @@
           $('.handles').on('click', function(){
             $('.fullTweetLines').remove();
             oldestTweet = 0;
-            displayNewTweets(getNewTweets(streams.users[$(this).text().slice(1)]));
+            displayNewTweets(getNewTweets(streams.users[$(this).text().slice(1)]),$tweethousing);
           });
         }
 
 
-        displayNewTweets(getNewTweets(streams.home));
+        displayNewTweets(getNewTweets(streams.home),$tweethousing);
 
         $('.getNew').on('click', function(){
           if (streams.home.length>20){
             $('.fullTweetLines').remove();
           }
-          displayNewTweets(getNewTweets(streams.home));
+          displayNewTweets(getNewTweets(streams.home),$tweethousing);
         });
 
 

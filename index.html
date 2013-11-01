@@ -79,6 +79,10 @@
             $('.fullTweetLines').remove();
             oldestTweet = 0;
             displayNewTweets(getNewTweets(streams.users[$(this).text().slice(1)]),$tweethousing);
+            $('.getNew').text('Show All Users');
+            $('.getNew').on('click', function(){
+              $('.getNew').text('Get New Tweets');
+            });
           });
         }
 

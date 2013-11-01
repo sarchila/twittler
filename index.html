@@ -54,7 +54,7 @@
           while(index <= newestTweet){
             var tweet = displayedTweets[index];
             var $tweet = $('<div class="tweets"></div>');
-            $tweet.text('@' + tweet.user + ': ' + tweet.message + '  ' + tweet.created_at);
+            $tweet.html('@' + tweet.user + ': ' + tweet.message + ' <span class="timestamp">' + tweet.created_at + "</span>");
             $tweet.prependTo($tweethousing);
             index++;
           }

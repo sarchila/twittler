@@ -4,6 +4,7 @@
     <title>Twittler by Santiago Archila</title>
     <script src="jquery.js"></script>
     <script src="data_generator.js"></script>
+    <script src="underbar.js"></script>
     <style type="text/css">
       body {
         background-color: #2A524B 
@@ -30,12 +31,28 @@
         var $tweethousing = $('.tweethousing');
 
         var oldestTweet = 0;
-        var newestTweet
+        var newestTweet;
+        var displayedTweets;
+        var oldTweetButton = $('<button type="button">Show Older Tweets</button>');
+        var addToLowerOnce = _.once(function(arg){
+          $('.lower').append(arg);
+        });
+
         var getNewTweets = function(){
-          newestTweet = streams.home.length-1;
+
+          if (streams.home.length>20){
+            displayedTweets = streams.home.slice(-20);
+            oldestTweet = 0;
+            $tweethousing.html(' ');
+            addToLowerOnce(oldTweetButton);
+          } else {
+            displayedTweets = streams.home;
+          }
+
+          newestTweet = displayedTweets.length-1;
           var index = oldestTweet;
           while(index <= newestTweet){
-            var tweet = streams.home[index];
+            var tweet = displayedTweets[index];
             var $tweet = $('<div class="tweets"></div>');
             $tweet.text('@' + tweet.user + ': ' + tweet.message + '  ' + tweet.created_at);
             $tweet.prependTo($tweethousing);
@@ -55,6 +72,8 @@
     <button type="button">Get New Tweets</button>
     </div>
     <div class="tweethousing">
+    </div>
+    <div class="lower">
     </div>
   </body>
 </html>

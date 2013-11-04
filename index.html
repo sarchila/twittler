@@ -15,7 +15,7 @@
         color: #FFFFFF;
       }
       #logo {
-        font: 200px arial,sans-serif;
+        font: 180px arial,sans-serif;
         text-align: center;
       }
 
@@ -52,8 +52,8 @@
     <script>
       $(document).ready(function(){
         var $tweethousing = $('.tweethousing');
-        var oldestTweet = 0;
-        var newestTweet;
+        var oldestTweetInd = 0;
+        var newestTweetInd = streams.home.length-1;
         
         var oldTweetButton = $('<button type="button" class="getOld">Show Older Tweets</button>');
         var addOnce = _.once(function(arg){
@@ -66,37 +66,39 @@
           return $tweet;
         }
 
-        var getNewTweets = function(stream){
+        var getOldestInd = function(stream){
 
+          var oldestInd;
           if (stream.length>20){
-            var tweetsToDisplay = stream.slice(-20);
-            oldestTweet = 0;
+            oldestInd = stream.length-20;
             addOnce(oldTweetButton);
             $('.getOld').on('click', function(){
-              getNewTweets(streams.home);
+              console.log("get older tweets");
             });
           } else {
-            tweetsToDisplay = stream;
+            oldestInd = 0;
           }
-          return tweetsToDisplay;
+          return oldestInd;
         }
 
-        var displayNewTweets = function(tweetsToDisplay, whichDiv){
+        var displayNewTweets = function(tweetsToDisplay, oldInd, newInd, whichDiv){
 
-          newestTweet = tweetsToDisplay.length-1;
-          var index = oldestTweet;
-          while(index <= newestTweet){
+          for (var index = oldInd; index <= newInd; index++){
             var tweet = tweetsToDisplay[index];
             var $tweet = createTweetNode(tweet);
             $tweet.prependTo(whichDiv);
-            index++;
           }
-          oldestTweet = newestTweet+1;
+          
+          oldestTweetInd = oldInd;
+          newestTweetInd = newInd;
 
           $('.handles').on('click', function(){
             $('.fullTweetLines').remove();
-            oldestTweet = 0;
-            displayNewTweets(getNewTweets(streams.users[$(this).text().slice(1)]),$tweethousing);
+            var userStream = streams.users[$(this).text().slice(1)];
+            newestTweetInd = userStream.length-1;
+            oldestTweetInd = getOldestInd(userStream);
+            // console.log([userStream, oldestTweetInd,newestTweetInd]);
+            displayNewTweets(userStream,oldestTweetInd,newestTweetInd,$tweethousing);
             $('.getNew').text('Show All Users');
             $('.getNew').on('click', function(){
               $('.getNew').text('Get New Tweets');
@@ -107,11 +109,16 @@
         var getFromAllUsers = function(){
           if (streams.home.length>20){
             $('.fullTweetLines').remove();
+            var oldInd = getOldestInd(streams.home);
+            displayNewTweets(streams.home,oldInd,streams.home.length-1,$tweethousing);
+          } else {
+            displayNewTweets(streams.home,newestTweetInd+1,streams.home.length-1,$tweethousing);
+            oldestTweetInd = 0;
           }
-          displayNewTweets(getNewTweets(streams.home),$tweethousing);
+          // console.log([streams.home, oldestTweetInd,newestTweetInd]);
         }
 
-        displayNewTweets(getNewTweets(streams.home),$tweethousing);
+        displayNewTweets(streams.home,oldestTweetInd,newestTweetInd,$tweethousing);
 
         $('.getNew').on('click', getFromAllUsers);
         $('#logo').on('click', getFromAllUsers);
@@ -121,7 +128,7 @@
     </script>
 
     <div class="upper">
-      <span id='logo'>twittler</span> by Santiago Archila<br>
+      <span id='logo'>twittler</span>by Santiago Archila<br>
       <button type="button" class="getNew">Get New Tweets</button></div>
     <div class="tweethousing"></div>
     <div class="lower"></div>

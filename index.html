@@ -10,7 +10,11 @@
         color: rgb(82, 189, 167);
         background-color: #2A524B 
       }
+      button {
+        text-align: left;
+      }
       .tweets {
+        text-align: left;
         font: 20px arial,sans-serif;
         color: #FFFFFF;
       }
@@ -18,30 +22,24 @@
         font: 180px arial,sans-serif;
         text-align: center;
       }
-
       #logo:hover {
         color: rgb(37, 224, 186);
         cursor: pointer;
       }
-      
       .upper {
-        text-align: center;
         font: 14px arial,sans-serif;
       }
       .lower {
-        text-align: center;
         font: 14px arial,sans-serif;
       }
       .handles {
         font: 20px arial,sans-serif;
         color: rgb(82, 189, 167);
       }
-
       .handles:hover {
         color: rgb(37, 224, 186);
         cursor: pointer;
       }
-
       .timestamps {
         font: 14px arial,sans-serif;
         color: gray;
@@ -50,14 +48,35 @@
   </head>
   <body>
     <script>
+      var currentStream;
+      var oldestTweetInd;
+      var newestTweetInd;
       $(document).ready(function(){
         var $tweethousing = $('.tweethousing');
-        var oldestTweetInd = 0;
-        var newestTweetInd = streams.home.length-1;
+        var $lower = $('.lower');
+        currentStream = streams.home;
+        oldestTweetInd = 0;
+        newestTweetInd = currentStream.length-1;
+
+        var switchOldButton = function(){
+          if ($('.getOld').text()==='No Older Tweets!'){
+            $('.getOld').text('Show Older Tweets');
+          }
+        }
         
         var oldTweetButton = $('<button type="button" class="getOld">Show Older Tweets</button>');
+        oldTweetButton.on('click', function(){
+          if (oldestTweetInd<10 && oldestTweetInd>0){
+            displayNewTweets(currentStream,0,oldestTweetInd-1,$lower);
+          } else if (oldestTweetInd>=10) {
+            displayNewTweets(currentStream,oldestTweetInd-10,oldestTweetInd-1,$lower);
+          } else {
+            $('.getOld').text('No Older Tweets!');
+          }
+        });
+
         var addOnce = _.once(function(arg){
-          $('.lower').append(arg);
+          $('.lowest').append(arg);
         });
 
         var createTweetNode = function(tweet){
@@ -72,9 +91,6 @@
           if (stream.length>20){
             oldestInd = stream.length-20;
             addOnce(oldTweetButton);
-            $('.getOld').on('click', function(){
-              console.log("get older tweets");
-            });
           } else {
             oldestInd = 0;
           }
@@ -82,24 +98,32 @@
         }
 
         var displayNewTweets = function(tweetsToDisplay, oldInd, newInd, whichDiv){
-
-          for (var index = oldInd; index <= newInd; index++){
-            var tweet = tweetsToDisplay[index];
-            var $tweet = createTweetNode(tweet);
-            $tweet.prependTo(whichDiv);
+          if (whichDiv === $lower){
+            for (var index = newInd; index >= oldInd; index--){
+              var tweet = tweetsToDisplay[index];
+              var $tweet = createTweetNode(tweet);
+              $tweet.appendTo(whichDiv);
+            }
+          } else if (whichDiv === $tweethousing){
+            for (var index = oldInd; index <= newInd; index++){
+              var tweet = tweetsToDisplay[index];
+              var $tweet = createTweetNode(tweet);
+              $tweet.prependTo(whichDiv);
+              newestTweetInd = newInd;
+            }
           }
-          
+
           oldestTweetInd = oldInd;
-          newestTweetInd = newInd;
 
           $('.handles').on('click', function(){
             $('.fullTweetLines').remove();
             var userStream = streams.users[$(this).text().slice(1)];
             newestTweetInd = userStream.length-1;
             oldestTweetInd = getOldestInd(userStream);
-            // console.log([userStream, oldestTweetInd,newestTweetInd]);
+            currentStream = userStream;
             displayNewTweets(userStream,oldestTweetInd,newestTweetInd,$tweethousing);
             $('.getNew').text('Show All Users');
+            switchOldButton();
             $('.getNew').on('click', function(){
               $('.getNew').text('Get New Tweets');
             });
@@ -107,15 +131,16 @@
         }
 
         var getFromAllUsers = function(){
-          if (streams.home.length>20){
+          currentStream = streams.home;
+          if (currentStream.length>20){
             $('.fullTweetLines').remove();
-            var oldInd = getOldestInd(streams.home);
-            displayNewTweets(streams.home,oldInd,streams.home.length-1,$tweethousing);
+            var oldInd = getOldestInd(currentStream);
+            displayNewTweets(currentStream,oldInd,currentStream.length-1,$tweethousing);
           } else {
-            displayNewTweets(streams.home,newestTweetInd+1,streams.home.length-1,$tweethousing);
+            displayNewTweets(currentStream,newestTweetInd+1,currentStream.length-1,$tweethousing);
             oldestTweetInd = 0;
           }
-          // console.log([streams.home, oldestTweetInd,newestTweetInd]);
+          switchOldButton();
         }
 
         displayNewTweets(streams.home,oldestTweetInd,newestTweetInd,$tweethousing);
@@ -132,5 +157,6 @@
       <button type="button" class="getNew">Get New Tweets</button></div>
     <div class="tweethousing"></div>
     <div class="lower"></div>
+    <div class="lowest"></div>
   </body>
 </html>

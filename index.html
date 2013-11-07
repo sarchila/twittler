@@ -3,6 +3,7 @@
   <head>
     <title>Twittler by Santiago Archila</title>
     <script src="jquery.js"></script>
+    <script src="jquery.timeago.js" type="text/javascript"></script>
     <script src="data_generator.js"></script>
     <script src="underbar.js"></script>
     <style type="text/css">
@@ -81,7 +82,7 @@
 
         var createTweetNode = function(tweet){
           var $tweet = $('<div class="fullTweetLines"></div>');
-          $tweet.html('<span class="handles">@' + tweet.user + '</span>: <span class="tweets">' + tweet.message + '</span> <span class="timestamps">' + tweet.created_at + "</span>");
+          $tweet.html('<span class="handles">@' + tweet.user + '</span>: <span class="tweets">' + tweet.message + '</span> <span class="timestamps">' + $.timeago(tweet.created_at) + '</span>');
           return $tweet;
         }
 

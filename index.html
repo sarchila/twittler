@@ -52,18 +52,61 @@
       var currentStream;
       var oldestTweetInd;
       var newestTweetInd;
+
       $(document).ready(function(){
         var $tweethousing = $('.tweethousing');
         var $lower = $('.lower');
+        var usernameSet = false;
         currentStream = streams.home;
         oldestTweetInd = 0;
         newestTweetInd = currentStream.length-1;
+
+        $("input#inputuser").on('click', function(){
+          $("input#inputuser")[0].value = "";
+        });
+
+        $("input#inputmessage").on('click', function(){
+          $("input#inputmessage")[0].value = "";
+        });
+
+        $("button#senduser").on('click', function(){
+          usernameStr = $("input#inputuser")[0].value;
+          if(usernameStr != '' && usernameStr != 'USERNAME'){
+            $("input#inputuser").remove();
+            $("button#senduser").remove();
+            
+            if (usernameStr[0] === '@'){
+              visitor = usernameStr.slice(1);
+            } else {
+              visitor = usernameStr;
+            }
+
+            $("span#username").text('@' + visitor);
+            streams.users[visitor] = [];
+            console.log('@' + visitor);
+            usernameSet = true;
+          }
+        });
+
+        $("button#sendmessage").on('click', function(){
+          messageStr = $("input#inputmessage")[0].value;
+          if(messageStr != '' && messageStr != 'MESSAGE'){
+            if (usernameSet){
+              $("input#inputmessage")[0].value = '';
+              writeTweet(messageStr);
+              getFromAllUsers();
+            } else {
+              alert("Please set username before sending twittle");
+            }
+          }
+        });
 
         var switchOldButton = function(){
           if ($('.getOld').text()==='No Older Twittles!'){
             $('.getOld').text('Show Older Twittles');
           }
         }
+
         
         var oldTweetButton = $('<button type="button" class="getOld">Show Older Twittles</button>');
         oldTweetButton.on('click', function(){
@@ -146,7 +189,8 @@
         }
 
         displayNewTwittles(streams.home,oldestTweetInd,newestTweetInd,$tweethousing);
-
+        $("input#inputuser")[0].value = "USERNAME";
+        $("input#inputmessage")[0].value = "MESSAGE";
         $('.getNew').on('click', getFromAllUsers);
         $('#logo').on('click', getFromAllUsers);
       });
@@ -154,6 +198,8 @@
 
     <div class="upper">
       <span id='logo'>twittler</span>by Santiago Archila<br>
+      <input class="draft" type="text" id="inputuser"/><span class="handles" id="username"></span><button class="send" id="senduser">send username</button> 
+      <input class="draft" type="text" id="inputmessage"/><button class="send" id="sendmessage">Send New Twittle</button><br>
       <button type="button" class="getNew">Get New Twittles</button></div>
     <div class="tweethousing"></div>
     <div class="lower"></div>

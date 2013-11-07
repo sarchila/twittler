@@ -59,19 +59,19 @@
         newestTweetInd = currentStream.length-1;
 
         var switchOldButton = function(){
-          if ($('.getOld').text()==='No Older Tweets!'){
-            $('.getOld').text('Show Older Tweets');
+          if ($('.getOld').text()==='No Older Twittles!'){
+            $('.getOld').text('Show Older Twittles');
           }
         }
         
-        var oldTweetButton = $('<button type="button" class="getOld">Show Older Tweets</button>');
+        var oldTweetButton = $('<button type="button" class="getOld">Show Older Twittles</button>');
         oldTweetButton.on('click', function(){
           if (oldestTweetInd<10 && oldestTweetInd>0){
-            displayNewTweets(currentStream,0,oldestTweetInd-1,$lower);
+            displayNewTwittles(currentStream,0,oldestTweetInd-1,$lower);
           } else if (oldestTweetInd>=10) {
-            displayNewTweets(currentStream,oldestTweetInd-10,oldestTweetInd-1,$lower);
+            displayNewTwittles(currentStream,oldestTweetInd-10,oldestTweetInd-1,$lower);
           } else {
-            $('.getOld').text('No Older Tweets!');
+            $('.getOld').text('No Older Twittles!');
           }
         });
 
@@ -97,7 +97,7 @@
           return oldestInd;
         }
 
-        var displayNewTweets = function(tweetsToDisplay, oldInd, newInd, whichDiv){
+        var displayNewTwittles = function(tweetsToDisplay, oldInd, newInd, whichDiv){
           if (whichDiv === $lower){
             for (var index = newInd; index >= oldInd; index--){
               var tweet = tweetsToDisplay[index];
@@ -121,11 +121,11 @@
             newestTweetInd = userStream.length-1;
             oldestTweetInd = getOldestInd(userStream);
             currentStream = userStream;
-            displayNewTweets(userStream,oldestTweetInd,newestTweetInd,$tweethousing);
+            displayNewTwittles(userStream,oldestTweetInd,newestTweetInd,$tweethousing);
             $('.getNew').text('Show All Users');
             switchOldButton();
             $('.getNew').on('click', function(){
-              $('.getNew').text('Get New Tweets');
+              $('.getNew').text('Get New Twittles');
             });
           });
         }
@@ -135,26 +135,24 @@
           if (currentStream.length>20){
             $('.fullTweetLines').remove();
             var oldInd = getOldestInd(currentStream);
-            displayNewTweets(currentStream,oldInd,currentStream.length-1,$tweethousing);
+            displayNewTwittles(currentStream,oldInd,currentStream.length-1,$tweethousing);
           } else {
-            displayNewTweets(currentStream,newestTweetInd+1,currentStream.length-1,$tweethousing);
+            displayNewTwittles(currentStream,newestTweetInd+1,currentStream.length-1,$tweethousing);
             oldestTweetInd = 0;
           }
           switchOldButton();
         }
 
-        displayNewTweets(streams.home,oldestTweetInd,newestTweetInd,$tweethousing);
+        displayNewTwittles(streams.home,oldestTweetInd,newestTweetInd,$tweethousing);
 
         $('.getNew').on('click', getFromAllUsers);
         $('#logo').on('click', getFromAllUsers);
-
-
       });
     </script>
 
     <div class="upper">
       <span id='logo'>twittler</span>by Santiago Archila<br>
-      <button type="button" class="getNew">Get New Tweets</button></div>
+      <button type="button" class="getNew">Get New Twittles</button></div>
     <div class="tweethousing"></div>
     <div class="lower"></div>
     <div class="lowest"></div>

@@ -82,7 +82,7 @@
 
         var createTweetNode = function(tweet){
           var $tweet = $('<div class="fullTweetLines"></div>');
-          $tweet.html('<span class="handles">@' + tweet.user + '</span>: <span class="tweets">' + tweet.message + '</span> <span class="timestamps">' + $.timeago(tweet.created_at) + '</span>');
+          $tweet.html('<span class="handles">@' + tweet.user + '</span>: <span class="tweets">' + tweet.message + '</span> <span class="timestamps"><abbr class="timeago" title="' + tweet.created_at.toString().slice(0,24) + '"></abbr></span>');
           return $tweet;
         }
 
@@ -115,6 +115,7 @@
           }
 
           oldestTweetInd = oldInd;
+          $('.timeago').timeago();
 
           $('.handles').on('click', function(){
             $('.fullTweetLines').remove();
